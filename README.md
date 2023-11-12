@@ -4,9 +4,7 @@
 # HW3
 
 <!-- badges: start -->
-
-usethis::use_github_actions() usethis::use_coverage()
-usethis::use_github_action(“test-coverage”) <!-- badges: end -->
+<!-- badges: end -->
 
 The goal of HW3 is to …
 

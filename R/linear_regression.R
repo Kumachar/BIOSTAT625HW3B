@@ -13,10 +13,15 @@
 #'@param intercept is a bool value indicates whether there is intercept in the model, default value is true
 #'@param scale is a bool value indicates whether scale the input X in the model, default value is false
 #'
-#'@return the matrix of parameters \eqn{\beta} forlinear regression
+#'@return the matrix of parameters \eqn{\beta} for linear regression
 #'
 #'@examples
+#'X = mtcars[,c('hp','wt')]
+#'y = mtcars[,c('mpg')]
 #'Linear_regression(X,y)
+#'
+#'@examples
+#'linear
 #'@export
 
 Linear_regression<-function(X,y,intercept=TRUE, scale=FALSE){

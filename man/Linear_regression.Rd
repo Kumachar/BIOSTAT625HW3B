@@ -16,7 +16,7 @@ Linear_regression(X, y, intercept = TRUE, scale = FALSE)
 \item{scale}{is a bool value indicates whether scale the input X in the model, default value is false}
 }
 \value{
-the matrix of parameters \eqn{\beta} forlinear regression
+the matrix of parameters \eqn{\beta} for linear regression
 }
 \description{
 This function is designed to obtain the coefficient \eqn{\beta} from ridge regression
@@ -26,7 +26,11 @@ where \eqn{\beta} served as a desired parameter of model.
 More information about this method could be found in references.
 }
 \examples{
+X = mtcars[,c('hp','wt')]
+y = mtcars[,c('mpg')]
 Linear_regression(X,y)
+
+linear
 }
 \references{
 Wikipedia contributors. (n.d.). Ridge regression. In Wikipedia. Retrieved [November, 11th, 2023], from https://en.wikipedia.org/wiki/Ridge_regression

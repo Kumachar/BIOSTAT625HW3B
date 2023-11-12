@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 # HW3
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/Kumachar/BIOSTAT625HW3B/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Kumachar/BIOSTAT625HW3B/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/Kumachar/BIOSTAT625HW3B/branch/master/graph/badge.svg)](https://app.codecov.io/gh/Kumachar/BIOSTAT625HW3B?branch=master)
 <!-- badges: end -->
 
 The goal of HW3 is to ...
@@ -27,9 +29,7 @@ You can install the development version of HW3 from [GitHub](https://github.com/
 ``` r
 # install.packages("devtools")
 devtools::install_github("Kumachar/BIOSTAT625HW3B")
-usethis::use_github_actions()
-usethis::use_coverage()
-usethis::use_github_action("test-coverage")
+
 ```
 
 ## Example
@@ -38,6 +38,9 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(HW3)
+usethis::use_github_actions()
+usethis::use_coverage()
+usethis::use_github_action("test-coverage")
 ## basic example code
 ```
 

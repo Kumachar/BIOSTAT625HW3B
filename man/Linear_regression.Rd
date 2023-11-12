@@ -4,10 +4,12 @@
 \alias{Linear_regression}
 \title{Linear Regression}
 \usage{
-Linear_regression(X, y, k = 0, intercept = TRUE, scale = FALSE)
+Linear_regression(X, y, intercept = TRUE, scale = FALSE)
 }
 \arguments{
 \item{y}{is a matrix of output labels, each row represents an observation}
+
+\item{intercept}{is a bool value indicates whether there is intercept in the model, default value is true}
 
 \item{x}{is a matrix of input features, each row represents an observation}
 }

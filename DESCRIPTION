@@ -4,8 +4,7 @@ Title: Linear Regression Implementation in R
 Version: 0.1.0
 Author: Weixiong Hua
 Maintainer: The package maintainer <git@github.com:Kumachar/BIOSTAT625HW3>
-Description: This package implements the estimation of parameters for linear regression and some simple evaluations for the estimated model. 
-Rcpp Function is included, check README for more details if needed.
+Description: This package implements the estimation of parameters for linear regression and some simple evaluations for the estimated model. Rcpp Function is included, check README for more details if needed.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

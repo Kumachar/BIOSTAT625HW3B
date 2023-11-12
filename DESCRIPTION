@@ -1,12 +1,12 @@
 Package: HW3
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Linear Regression Implementation in R
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Weixiong Hua
+Maintainer: The package maintainer <git@github.com:Kumachar/BIOSTAT625HW3>
+Description: This package implements the estimation of parameters for linear regression and some simple evaluations for the estimated model. 
+Rcpp Function is included, check README for more details if needed.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3

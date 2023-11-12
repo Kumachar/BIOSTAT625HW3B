@@ -8,7 +8,7 @@
 #'@references
 #'Wikipedia contributors. (n.d.). Ridge regression. In Wikipedia. Retrieved [November, 11th, 2023], from https://en.wikipedia.org/wiki/Ridge_regression
 #'
-#'@param x is a matrix of input features, each row represents an observation
+#'@param X is a matrix of input features, each row represents an observation
 #'@param y is a matrix of output labels, each row represents an observation
 #'@param intercept is a bool value indicates whether there is intercept in the model, default value is true
 #'@param scale is a bool value indicates whether scale the input X in the model, default value is false

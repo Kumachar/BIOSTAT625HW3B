@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 # HW3
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/Kumachar/BIOSTAT625HW3B/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Kumachar/BIOSTAT625HW3B/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/Kumachar/BIOSTAT625HW3B/branch/master/graph/badge.svg)](https://app.codecov.io/gh/Kumachar/BIOSTAT625HW3B?branch=master)
 <!-- badges: end -->
 
 The goal of HW3 is to ...

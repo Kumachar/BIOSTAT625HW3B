@@ -26,11 +26,19 @@ where \eqn{\beta} served as a desired parameter of model.
 More information about this method could be found in references.
 }
 \examples{
-X = mtcars[,c('hp','wt')]
-y = mtcars[,c('mpg')]
-Linear_regression(X,y)
+# Load example dataset
+data(mtcars)
 
-linear
+# Prepare input data
+X <- mtcars[, c("hp", "wt")]  # horsepower and weight
+y <- mtcars$mpg               # miles per gallon
+
+# Run the linear regression
+result <- Linear_regression(X, y)
+
+# Print the result
+print(result)
+
 }
 \references{
 Wikipedia contributors. (n.d.). Ridge regression. In Wikipedia. Retrieved [November, 11th, 2023], from https://en.wikipedia.org/wiki/Ridge_regression

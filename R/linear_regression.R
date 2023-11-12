@@ -16,12 +16,19 @@
 #'@return the matrix of parameters \eqn{\beta} for linear regression
 #'
 #'@examples
-#'X = mtcars[,c('hp','wt')]
-#'y = mtcars[,c('mpg')]
-#'Linear_regression(X,y)
+#' # Load example dataset
+#' data(mtcars)
 #'
-#'@examples
-#'linear
+#' # Prepare input data
+#' X <- mtcars[, c("hp", "wt")]  # horsepower and weight
+#' y <- mtcars$mpg               # miles per gallon
+#'
+#' # Run the linear regression
+#' result <- Linear_regression(X, y)
+#'
+#' # Print the result
+#' print(result)
+#'
 #'@export
 
 Linear_regression<-function(X,y,intercept=TRUE, scale=FALSE){

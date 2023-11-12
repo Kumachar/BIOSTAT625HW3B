@@ -10,6 +10,7 @@
 #'
 #'@param x is a matrix of input features, each row represents an observation
 #'@param y is a matrix of output labels, each row represents an observation
+#'@param intercept is a bool value indicates whether there is intercept in the model, default value is true
 #'
 #'@return the matrix of parameters \eqn{\beta} forlinear regression
 #'
@@ -18,8 +19,9 @@
 #'
 #'@export
 
-Linear_regression<-function(X,y,k=0,intercept=TRUE, scale=FALSE){
-  #beta_hat =
+Linear_regression<-function(X,y,intercept=TRUE, scale=FALSE){
   n = nrow(X)
   p = ncol(X)
+  result <- solve(t(X)%*%X)*t(X)*y
+  return(solve(t(X)%*%X)*t(X)*y)
 }

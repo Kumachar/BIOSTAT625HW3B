@@ -30,5 +30,6 @@ y <- mtcars$mpg               # miles per gallon
 # Run the linear regression
 b <- Linear_regression(X, y)
 result <- linear_prediction(X,b,TRUE)
+print(result)
 
 }

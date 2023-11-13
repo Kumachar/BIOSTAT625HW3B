@@ -9,13 +9,26 @@ linear_prediction(X, b, intercept = TRUE)
 \arguments{
 \item{X}{is a matrix of input features, each row represents an observation}
 
-\item{b}{is nums of parameters you obtained from linear regression}
+\item{b}{is nums of parameters you obtained from linear_regression}
 
-\item{intercept}{is a bool value denotes if model contain an intercept}
+\item{intercept}{is a bool value indicating if model contains an intercept}
 }
 \value{
 the prediction \eqn{X\beta} for linear regression
 }
 \description{
 This function is designed to obtain the prediction of linear regression
+}
+\examples{
+#Load example dataset
+data(mtcars)
+
+#Use horsepower&weight to predict miles per gallon
+X <- mtcars[, c("hp", "wt")]  # horsepower and weight
+y <- mtcars$mpg               # miles per gallon
+
+# Run the linear regression
+b <- Linear_regression(X, y)
+result <- linear_prediction(X,b,TRUE)
+
 }

@@ -12,8 +12,6 @@ Linear_regression(X, y, intercept = TRUE)
 \item{y}{is a matrix of output labels, each row represents an observation}
 
 \item{intercept}{is a bool value indicates whether there is intercept in the model, default value is true}
-
-\item{scale}{is a bool value indicates whether scale the input X in the model, default value is false}
 }
 \value{
 the matrix of parameters \eqn{\beta} for linear regression
@@ -29,14 +27,14 @@ More information about this method could be found in references.
 # Load example dataset
 data(mtcars)
 
-# Prepare input data
+#Use horse power weight to predict miles per galon
 X <- mtcars[, c("hp", "wt")]  # horsepower and weight
 y <- mtcars$mpg               # miles per gallon
 
 # Run the linear regression
 result <- Linear_regression(X, y)
 
-# Print the result
+
 print(result)
 
 }

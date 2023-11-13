@@ -11,7 +11,6 @@
 #'@param X is a matrix of input features, each row represents an observation
 #'@param y is a matrix of output labels, each row represents an observation
 #'@param intercept is a bool value indicates whether there is intercept in the model, default value is true
-#'@param scale is a bool value indicates whether scale the input X in the model, default value is false
 #'
 #'@return the matrix of parameters \eqn{\beta} for linear regression
 #'
@@ -19,14 +18,14 @@
 #' # Load example dataset
 #' data(mtcars)
 #'
-#' # Prepare input data
+#' #Use horse power weight to predict miles per galon
 #' X <- mtcars[, c("hp", "wt")]  # horsepower and weight
 #' y <- mtcars$mpg               # miles per gallon
 #'
 #' # Run the linear regression
 #' result <- Linear_regression(X, y)
 #'
-#' # Print the result
+#'
 #' print(result)
 #'
 #'@export
@@ -46,7 +45,7 @@ Linear_regression<-function(X,y,intercept=TRUE){
   p = ncol(X)
   if(det(t(X)%*%X)==0){
     print('Matrix is invertible Please Check!')
-    return(NA)
+    return(NULL)
   }
   result <- solve(t(X)%*%X)%*%t(X)%*%y
   return(drop(result))

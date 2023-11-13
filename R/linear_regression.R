@@ -31,18 +31,24 @@
 #'
 #'@export
 
-Linear_regression<-function(X,y,intercept=TRUE, scale=FALSE){
+Linear_regression<-function(X,y,intercept=TRUE){
   if(!is.matrix(X)){
     X = as.matrix(X)
   }
   if(!is.matrix(y)){
     y = as.matrix(y)
   }
+
   if(intercept){
     X = cbind("(Intercept)"=1,X)
   }
   n = nrow(X)
   p = ncol(X)
+  if(det(t(X)%*%X)==0){
+    print('Matrix is invertible Please Check!')
+    return(NA)
+  }
   result <- solve(t(X)%*%X)%*%t(X)%*%y
   return(drop(result))
 }
+

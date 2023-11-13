@@ -4,7 +4,7 @@
 \alias{Linear_regression}
 \title{Linear Regression}
 \usage{
-Linear_regression(X, y, intercept = TRUE, scale = FALSE)
+Linear_regression(X, y, intercept = TRUE)
 }
 \arguments{
 \item{X}{is a matrix of input features, each row represents an observation}

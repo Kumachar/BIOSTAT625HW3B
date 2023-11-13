@@ -43,9 +43,6 @@ Linear_regression<-function(X,y,intercept=TRUE){
     X = cbind("(Intercept)"=1,X)
   }
 
-  n = nrow(X)
-  p = ncol(X)
-
   if(det(t(X)%*%X)==0){
     print('Matrix is invertible Please Check!')
     return(NULL)

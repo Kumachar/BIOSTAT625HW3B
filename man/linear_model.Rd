@@ -14,7 +14,7 @@ linear_model(X, y, intercept = TRUE)
 \item{intercept}{is a bool value denotes if model contain an intercept}
 }
 \value{
-the result list of linear regression
+the result list of linear regression. Notice that, result model in the return list has removed the observation with NA.
 }
 \description{
 This function is designed to obtain the result of linear regression

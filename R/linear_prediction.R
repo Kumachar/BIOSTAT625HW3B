@@ -22,12 +22,14 @@
 #'@export
 
 linear_prediction<-function(X,b,intercept=TRUE){
-  if(intercept&!any(apply(X, 2, FUN = function(x) all(x == 1)))){
-    X = cbind(1,X)
-  }
   if (!is.matrix(X)){
     X = data.matrix(X)
   }
+
+  if(intercept&!any(apply(X, 2, FUN = function(x) all(x == 1)))){
+    X = cbind(1,X)
+  }
+
   beta = matrix(data=b,ncol=1)
   return(drop(X%*%beta))
 }

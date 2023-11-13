@@ -27,7 +27,7 @@ More information about this method could be found in references.
 # Load example dataset
 data(mtcars)
 
-#Use horse power weight to predict miles per galon
+#Use horsepower&weight to predict miles per gallon
 X <- mtcars[, c("hp", "wt")]  # horsepower and weight
 y <- mtcars$mpg               # miles per gallon
 

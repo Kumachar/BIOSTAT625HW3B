@@ -18,7 +18,7 @@
 #' # Load example dataset
 #' data(mtcars)
 #'
-#' #Use horse power weight to predict miles per galon
+#' #Use horsepower&weight to predict miles per gallon
 #' X <- mtcars[, c("hp", "wt")]  # horsepower and weight
 #' y <- mtcars$mpg               # miles per gallon
 #'
@@ -31,6 +31,7 @@
 #'@export
 
 Linear_regression<-function(X,y,intercept=TRUE){
+
   if(!is.matrix(X)){
     X = as.matrix(X)
   }
@@ -38,15 +39,18 @@ Linear_regression<-function(X,y,intercept=TRUE){
     y = as.matrix(y)
   }
 
-  if(intercept){
+  if(intercept&!any(apply(X, 2, FUN = function(x) all(x == 1)))){
     X = cbind("(Intercept)"=1,X)
   }
+
   n = nrow(X)
   p = ncol(X)
+
   if(det(t(X)%*%X)==0){
     print('Matrix is invertible Please Check!')
     return(NULL)
   }
+
   result <- solve(t(X)%*%X)%*%t(X)%*%y
   return(drop(result))
 }

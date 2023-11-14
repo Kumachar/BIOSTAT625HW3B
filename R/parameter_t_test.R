@@ -47,5 +47,6 @@ parameter_t_test <- function(model){
   df2 = nrow(X)-model$rank
   f =(SSY - sum(model$residuals^2))/df1/(sum(model$residuals^2)/df2)
   pfvalue = pf(f, df1, df2,lower.tail = F)
+
   return(list(Estimate =beta,StdError=std, t_value=t, pt_value=ptvalue, f_value=f, pf_value=pfvalue))
 }

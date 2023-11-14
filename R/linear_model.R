@@ -18,7 +18,6 @@
 #'@export
 
 linear_model <- function(X,y,intercept=TRUE){
-
   #Remove NA in the data
   if(!is.matrix(X)){
     X = as.matrix(X)
@@ -28,7 +27,7 @@ linear_model <- function(X,y,intercept=TRUE){
   }
 
   na_row = apply(X,1,FUN = function(x) any(is.na(x)))
-  X = X[!na_row,]
+  X = X[!na_row,,drop=FALSE]
   y = y[!na_row,]
   remove_observation = list(removed_NA_obser=sum(na_row), reomved_row=which(na_row))
 
@@ -37,6 +36,14 @@ linear_model <- function(X,y,intercept=TRUE){
   fitted.values <- linear_prediction(X,coefficients,intercept)
   residuals <- y-fitted.values
 
-  return(list(coefficients=coefficients,fitted.values=fitted.values,residuals=residuals,
-              model=data.frame(cbind(X,y)),intercept=intercept, remove_observation=remove_observation))
+  if(intercept&!any(apply(X, 2, FUN = function(x) all(x == 1)))){
+    rank = ncol(X)+1
+  }else{
+    rank = ncol(X)
+  }
+
+  mse = sum(residuals^2)/(nrow(X)-rank)
+
+  return(list(coefficients=coefficients,fitted.values=fitted.values,residuals=residuals, rank=rank, mse = mse,
+              model=list(X=X,y=y),intercept=intercept, remove_observation=remove_observation))
 }

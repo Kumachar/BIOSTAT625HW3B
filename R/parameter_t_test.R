@@ -48,8 +48,8 @@ parameter_t_test <- function(model){
   f =(SSY - sum(model$residuals^2))/df1/(sum(model$residuals^2)/df2)
   pfvalue = pf(f, df1, df2,lower.tail = F)
 
-  R2 = sum((fitted.values-mean(y))^2)/sum((y-mean(y))^2)
-  R2_adj = 1-sum(residuals^2)/(nrow(X)-model$rank)/(sum((y-mean(y))^2)/(nrow(X)-1))
+  R2 = sum((model$fitted.values-mean(model$model$y))^2)/sum((model$model$y-mean(model$model$y))^2)
+  R2_adj = 1-sum(model$residuals^2)/(nrow(X)-model$rank)/(sum((model$model$y-mean(model$model$y))^2)/(nrow(X)-1))
 
   return(list(Estimate =beta,StdError=std, t_value=t, pt_value=ptvalue, f_value=f, pf_value=pfvalue, R2 = R2, R2_adj = R2_adj))
 }

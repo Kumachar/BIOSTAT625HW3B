@@ -4,11 +4,9 @@ test_that("multiplication works", {
   y <- mtcars$mpg
   model1 <- linear_model(X,y)
   model2 <- lm(mpg~hp+wt,data = mtcars)
-
+  model1$
   rsum <- summary(model2)
   testresult <- parameter_t_test(model1)
-
-  rsum$r.squared
 
   expect_equal(testresult$Estimate, rsum$coefficients[,'Estimate'],tolerance = 1e-6)
   expect_equal(testresult$StdError, rsum$coefficients[,'Std. Error'],tolerance = 1e-6)

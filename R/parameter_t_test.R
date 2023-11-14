@@ -27,17 +27,25 @@
 #'@export
 
 parameter_t_test <- function(model){
+
   if(model$intercept&!any(apply(model$model$X, 2, FUN = function(x) all(x == 1)))){
     X = cbind('(Intercept)'=1,model$model$X)
   }else{
     X = model$model$X
   }
+  #t test
   beta = model$coefficients
   ajj = diag(solve(t(X)%*%X))
   df = nrow(X)-model$rank
   mse = sum(model$residuals^2)/df
   std = sqrt(mse*ajj)
   t = 1/std*beta
-  pvalue = 2*pt(abs(t),df,lower.tail = F)
-  return(list(Estimate =beta,StdError=std, t_value=t, p_value=pvalue))
+  ptvalue = 2*pt(abs(t),df,lower.tail = F)
+  #F test
+  SSY = sum((model$model$y-mean(model$model$y))^2)
+  df1 = model$rank-1
+  df2 = nrow(X)-model$rank
+  f =(SSY - sum(model$residuals^2))/df1/(sum(model$residuals^2)/df2)
+  pfvalue = pf(f, df1, df2,lower.tail = F)
+  return(list(Estimate =beta,StdError=std, t_value=t, pt_value=ptvalue, f_value=f, pf_value=pfvalue))
 }

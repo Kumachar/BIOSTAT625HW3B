@@ -22,5 +22,4 @@ test_that("multiplication works", {
   expect_equal(testresult$StdError, rsum$coefficients[,'Std. Error'],tolerance = 1e-6, ignore_attr = TRUE)
   expect_equal(testresult$t_value, rsum$coefficients[,'t value'],tolerance = 1e-6, ignore_attr = TRUE)
   expect_equal(testresult$p_value, rsum$coefficients[,'Pr(>|t|)'],tolerance = 1e-6, ignore_attr = TRUE)
-
 })

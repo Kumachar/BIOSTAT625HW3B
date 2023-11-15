@@ -173,3 +173,5 @@ summary(model2)
     #> Warning: 程辑包'NHANES'是用R版本4.1.3 来建造的
 
 <img src="man/figures/README-pressure-1.png" width="100%" /><img src="man/figures/README-pressure-2.png" width="100%" />
+
+## Moreover, since our design is completely based on matrix, you can even apply regression on multiple output

@@ -25,13 +25,13 @@ linear_model <- function(X,y,intercept=TRUE){
   if(!is.matrix(y)){
     y = as.matrix(y)
   }
+
   na_row1 = apply(X,1,FUN = function(x) any(is.na(x)))
   na_row2 = apply(y,1,FUN = function(x) any(is.na(x)))
   na_row = na_row1 | na_row2
   X = X[!na_row,,drop=FALSE]
   y = y[!na_row,]
   remove_observation = list(removed_NA_obser=sum(na_row), reomved_row=which(na_row))
-
 
   coefficients <- Linear_regression(X,y,intercept)
   fitted.values <- linear_prediction(X,coefficients,intercept)
@@ -44,6 +44,7 @@ linear_model <- function(X,y,intercept=TRUE){
   }
 
   mse = sum(residuals^2)/(nrow(X)-rank)
+
 
   return(list(coefficients=coefficients,fitted.values=fitted.values,residuals=residuals, rank=rank, mse = mse,
               model=list(X=X,y=y),intercept=intercept, remove_observation=remove_observation))

@@ -107,8 +107,7 @@ summary(model2)
 #install.packages("ggplot2")
 library(NHANES)
 library(ggplot2)
-model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES$BPSysAve)
-
+model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
 # Assuming model3 contains fitted values and coefficients
 fitted_values <- model3$fitted.values
 coefficients <- model3$coefficients
@@ -135,4 +134,8 @@ ggplot(plot_data, aes(x = Height, y = BPSysAve)) +
 
 ```
 
+## Moreover, since our design is completely based on matrix, you can even apply regression on multiple output
+```{r}
+
+```
 

@@ -30,6 +30,6 @@ linear_prediction<-function(X,b,intercept=TRUE){
     X = cbind(1,X)
   }
 
-  beta = matrix(data=b,ncol=1)
+  beta = data.matrix(b)
   return(drop(X%*%beta))
 }

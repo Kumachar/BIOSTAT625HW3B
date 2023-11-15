@@ -124,18 +124,28 @@ plot_data <- data.frame(
 ggplot(plot_data, aes(x = Weight, y = BPSysAve)) + 
   geom_point() + 
   geom_line(aes(y = FittedBPSysAve), color = "blue") +
-  ggtitle("Scatter plot with Fitted Line: Weight vs BPSysAve")
+  ggtitle("Weight v.s BPSysAve")
 
 # Plot for Height vs BPSysAve
 ggplot(plot_data, aes(x = Height, y = BPSysAve)) + 
   geom_point() + 
   geom_line(aes(y = FittedBPSysAve), color = "red") +
-  ggtitle("Scatter plot with Fitted Line: Height vs BPSysAve")
+  ggtitle("Height v.s BPSysAve")
 
 ```
 
-## Moreover, since our design is completely based on matrix, you can even apply regression on multiple output
+## More features!
+since our design is completely based on matrix, you can even apply regression on multiple output
 ```{r}
+X = NHANES[,c("Weight","Height")]
+y = NHANES[,c("BPSysAve","Age")]
+model4 <- linear_model(X,y)
+print(model4$coefficients)
+print(model4$fitted.values[1:5])
 
+model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
+model_r1$coefficients
+model_r2 <- lm(Age~Weight+Height, data = NHANES)
+model_r2$coefficients
 ```
 

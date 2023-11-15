@@ -174,4 +174,29 @@ summary(model2)
 
 <img src="man/figures/README-pressure-1.png" width="100%" /><img src="man/figures/README-pressure-2.png" width="100%" />
 
-## Moreover, since our design is completely based on matrix, you can even apply regression on multiple output
+## More features!
+
+since our design is completely based on matrix, you can even apply
+regression on multiple output
+
+``` r
+X = NHANES[,c("Weight","Height")]
+y = NHANES[,c("BPSysAve","Age")]
+model4 <- linear_model(X,y)
+print(model4$coefficients)
+#>                BPSysAve         Age
+#> (Intercept) 96.47669099 20.99512354
+#> Weight       0.19308885  0.22071809
+#> Height       0.03967481  0.01651863
+print(model4$fitted.values[1:5])
+#> [1] 119.8871 119.8871 119.8871 119.8987 107.5115
+
+model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
+model_r1$coefficients
+#> (Intercept)      Weight      Height 
+#> 96.47669099  0.19308885  0.03967481
+model_r2 <- lm(Age~Weight+Height, data = NHANES)
+model_r2$coefficients
+#> (Intercept)      Weight      Height 
+#> -23.1537289   0.2113783   0.2811055
+```

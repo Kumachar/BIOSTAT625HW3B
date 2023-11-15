@@ -3,4 +3,5 @@
 export(Linear_regression)
 export(linear_model)
 export(linear_prediction)
+export(model_summary)
 export(parameter_t_test)

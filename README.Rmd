@@ -135,7 +135,7 @@ ggplot(plot_data, aes(x = Height, y = BPSysAve)) +
 ```
 
 ## More features!
-since our design is completely based on matrix, you can even apply regression on multiple output
+since our design is completely based on matrix, you can even apply regression on multiple output(test-statistics is not available yet)
 ```{r}
 X = NHANES[,c("Weight","Height")]
 y = NHANES[,c("BPSysAve","Age")]
@@ -143,9 +143,30 @@ model4 <- linear_model(X,y)
 print(model4$coefficients)
 print(model4$fitted.values[1:5])
 
+#Compared with regression individually
 model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
 model_r1$coefficients
 model_r2 <- lm(Age~Weight+Height, data = NHANES)
 model_r2$coefficients
 ```
+## Some benchmark
+```{r}
+library(rbenchmark)
 
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+           model2 = lm(Age~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+```

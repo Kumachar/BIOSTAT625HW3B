@@ -177,7 +177,7 @@ summary(model2)
 ## More features!
 
 since our design is completely based on matrix, you can even apply
-regression on multiple output
+regression on multiple output(test-statistics is not available yet)
 
 ``` r
 X = NHANES[,c("Weight","Height")]
@@ -191,6 +191,7 @@ print(model4$coefficients)
 print(model4$fitted.values[1:5])
 #> [1] 119.8871 119.8871 119.8871 119.8987 107.5115
 
+#Compared with regression individually
 model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
 model_r1$coefficients
 #> (Intercept)      Weight      Height 
@@ -199,4 +200,33 @@ model_r2 <- lm(Age~Weight+Height, data = NHANES)
 model_r2$coefficients
 #> (Intercept)      Weight      Height 
 #> -23.1537289   0.2113783   0.2811055
+```
+
+## Some benchmark
+
+``` r
+library(rbenchmark)
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#>          test replications elapsed relative user.self sys.self
+#> 1 Linearmodel          100    3.09    25.75      3.10     0.00
+#> 2       rcode          100    0.12     1.00      0.11     0.02
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+           model2 = lm(Age~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#>          test replications elapsed relative user.self sys.self
+#> 1 Linearmodel          100    3.09   11.885      3.09        0
+#> 2       rcode          100    0.26    1.000      0.26        0
 ```

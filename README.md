@@ -170,7 +170,6 @@ summary(model2)
 
 ## This function can also work with other packages
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+    #> Warning: 程辑包'NHANES'是用R版本4.1.3 来建造的
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+<img src="man/figures/README-pressure-1.png" width="100%" /><img src="man/figures/README-pressure-2.png" width="100%" />

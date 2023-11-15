@@ -26,8 +26,8 @@
 #' print(result)
 #'
 #'@export
-model_summary <- function(model, show_table=TRUE) {
 
+model_summary <- function(model, show_table=TRUE) {
   test_result <- parameter_t_test(model)
 
   summary_results <- data.frame(

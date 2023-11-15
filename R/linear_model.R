@@ -25,8 +25,9 @@ linear_model <- function(X,y,intercept=TRUE){
   if(!is.matrix(y)){
     y = as.matrix(y)
   }
-
-  na_row = apply(X,1,FUN = function(x) any(is.na(x)))
+  na_row1 = apply(X,1,FUN = function(x) any(is.na(x)))
+  na_row2 = apply(y,1,FUN = function(x) any(is.na(x)))
+  na_row = na_row1 | na_row2
   X = X[!na_row,,drop=FALSE]
   y = y[!na_row,]
   remove_observation = list(removed_NA_obser=sum(na_row), reomved_row=which(na_row))

@@ -29,6 +29,7 @@
 model_summary <- function(model, show_table=TRUE) {
 
   test_result <- parameter_t_test(model)
+
   summary_results <- data.frame(
     Estimate = test_result$Estimate,
     StdError = test_result$StdError,

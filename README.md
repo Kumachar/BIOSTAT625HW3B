@@ -132,13 +132,20 @@ print(result)
 #> 
 #> $R2_adj
 #> [1] 0.8148396
+```
 
-#You can compare these result with the original lm and summary function
+You can compare these result with the original lm and summary function
+
+``` r
 model2 <- lm(mpg~hp+wt, data = mtcars)
 model2$coefficients
 #> (Intercept)          hp          wt 
 #> 37.22727012 -0.03177295 -3.87783074
-
+head(predict(model2,X))
+#>         Mazda RX4     Mazda RX4 Wag        Datsun 710    Hornet 4 Drive 
+#>          23.57233          22.58348          25.27582          21.26502 
+#> Hornet Sportabout           Valiant 
+#>          18.32727          20.47382
 summary(model2)
 #> 
 #> Call:
@@ -161,7 +168,8 @@ summary(model2)
 #> F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12
 ```
 
-##This function can also work with other packages
+## This function can also work with other packages
+
 <img src="man/figures/README-pressure-1.png" width="100%" />
 
 In that case, don’t forget to commit and push the resulting figure

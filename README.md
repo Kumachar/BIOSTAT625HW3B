@@ -168,6 +168,22 @@ summary(model2)
 #> F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12
 ```
 
+*We can formally test whether they are equal*
+
+``` r
+library(testthat)
+  X1 <- mtcars[, c("hp")]
+  names(X1) <- 'hp'
+  mymodel <- linear_model(X1,y,T)
+  lmmodel <- lm(y~X1, data=mtcars)
+
+  expect_equal(mymodel$coefficients, lmmodel$coefficients, tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(mymodel$fitted.values, lmmodel$fitted.values, tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(mymodel$residuals, lmmodel$residuals, tolerance = 1e-6,ignore_attr = TRUE)
+  
+  
+```
+
 ## This function can also work with other packages
 
 ``` r
@@ -196,7 +212,7 @@ ggplot(plot_data, aes(x = Weight, y = BPSysAve)) +
   ggtitle("Weight v.s BPSysAve")
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
 ``` r
 # Plot for Height vs BPSysAve
@@ -206,7 +222,7 @@ ggplot(plot_data, aes(x = Height, y = BPSysAve)) +
   ggtitle("Height v.s BPSysAve")
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
 
 ## More features!
 
@@ -249,8 +265,8 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.07   23.615      3.06        0
-#> 2       rcode          100    0.13    1.000      0.12        0
+#> 1 Linearmodel          100    3.17   22.643      3.15     0.01
+#> 2       rcode          100    0.14    1.000      0.14     0.00
 
 benchmark(Linearmodel={
            model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
@@ -261,6 +277,6 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.11    12.44      3.11        0
+#> 1 Linearmodel          100    3.17    12.68      3.16        0
 #> 2       rcode          100    0.25     1.00      0.25        0
 ```

@@ -34,7 +34,7 @@ linear_model <- function(X,y,intercept=TRUE,rcpp=FALSE){
   y = y[!na_row,]
   remove_observation = list(removed_NA_obser=sum(na_row), reomved_row=which(na_row))
 
-  coefficients <- Linear_regression(X,y,intercept)
+  coefficients <- Linear_regression(X,y,intercept,rcpp)
   fitted.values <- linear_prediction(X,coefficients,intercept)
   residuals <- y-fitted.values
 

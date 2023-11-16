@@ -63,7 +63,7 @@ Or you simply find the help page of these functions after the installation of th
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Here we offered an example of how to make use of these functions:
 
 ```{r example}
 library(HW3)

@@ -17,3 +17,152 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(HW3)
 ```
+
+## Installation
+
+You can install the newest version of HW3 from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("Kumachar/BIOSTAT625HW3B")
+```
+## Function Usage
+
+1. **linear_model(X, y, intercept = TRUE)**: Builds a linear model. 
+    - `X`: Predictor variables (matrix or data frame). 
+    - `y`: Response variable (matrix or data frame).
+    - `intercept`: Whether to include the intercept (default: TRUE). 
+    - Returns a list with model coefficients, fitted values, residuals, rank, mean squared error, model data, intercept inclusion status, and NA removal details.
+    
+2. **parameter_t_test(model)**: Conducts t-tests and F-tests on model parameters. -->
+    - `model`: The linear model object returned by `linear_model`. 
+    - Returns a list with estimates, standard errors, t-values, p-values for t-tests, F-value, p-value for F-test, R², and adjusted R². 
+
+ 3. **linear_prediction(X, b, intercept = TRUE)**: Generates predictions using the linear model.
+    - `X`: Predictor variables (matrix or data frame). 
+    - `b`: Coefficients of the linear model. 
+    - `intercept`: Whether the intercept was included in the model.
+    - Returns predicted values. 
+
+ 4. **Linear_regression(X, y, intercept = TRUE)**: Helper function for `linear_model` to perform linear regression.
+    - `X`: Predictor variables (matrix or data frame). 
+    - `y`: Response variable (matrix or data frame).
+    - `intercept`: Whether to include the intercept.
+    - Returns regression coefficients. 
+
+ 5. **model_summary(model, show_table = TRUE)**: Summarizes the linear model. 
+    - `model`: The linear model object returned by `linear_model`. 
+    - `show_table`: Whether to display the summary table (default: TRUE). 
+    - Returns test results and optional
+
+Or you simply find the help page of these functions after the installation of this package by ?function_name
+
+## Example
+
+Here we offered an example of how to make use of these functions:
+
+```{r example}
+library(HW3)
+## basic example code
+```
+
+Now we can display a simple example of how this package works. We are going to use linear model to predict the Miles per gallon based on horse power and weight of a car in mtcars data.
+
+```{r cars}
+data("mtcars")
+X <- mtcars[, c("hp", "wt")]
+y <- mtcars$mpg
+
+#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car
+model <- linear_model(X, y, intercept = TRUE)
+
+#Now we can see the regression coefficients for each variable you use in the model
+model$coefficients
+
+#Also we can predict data based on acquired coefficients use lineaer_prediction function
+head(linear_prediction(X,model$coefficients))
+
+#There are also some useful functions to generate the result of regression 
+result<-model_summary(model)
+
+print(result)
+
+```
+
+You can compare these result with the original lm and summary function
+```{r}
+model2 <- lm(mpg~hp+wt, data = mtcars)
+model2$coefficients
+head(predict(model2,X))
+summary(model2)
+```
+
+## This function can also work with other packages
+```{r pressure, echo = FALSE}
+#install.packages("NHANES")
+#install.packages("ggplot2")
+library(NHANES)
+library(ggplot2)
+model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+# Assuming model3 contains fitted values and coefficients
+fitted_values <- model3$fitted.values
+coefficients <- model3$coefficients
+
+# Prepare a data frame for plotting
+plot_data <- data.frame(
+  Weight = model3$model$X[,'Weight'],
+  Height = model3$model$X[,'Height'],
+  BPSysAve = model3$model$y,
+  FittedBPSysAve = fitted_values
+)
+
+# Plot for Weight vs BPSysAve
+ggplot(plot_data, aes(x = Weight, y = BPSysAve)) + 
+  geom_point() + 
+  geom_line(aes(y = FittedBPSysAve), color = "blue") +
+  ggtitle("Weight v.s BPSysAve")
+
+# Plot for Height vs BPSysAve
+ggplot(plot_data, aes(x = Height, y = BPSysAve)) + 
+  geom_point() + 
+  geom_line(aes(y = FittedBPSysAve), color = "red") +
+  ggtitle("Height v.s BPSysAve")
+
+```
+
+## More features!
+since our design is completely based on matrix, you can even apply regression on multiple output(test-statistics is not available yet)
+```{r}
+X = NHANES[,c("Weight","Height")]
+y = NHANES[,c("BPSysAve","Age")]
+model4 <- linear_model(X,y)
+print(model4$coefficients)
+print(model4$fitted.values[1:5])
+
+#Compared with regression individually
+model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
+model_r1$coefficients
+model_r2 <- lm(Age~Weight+Height, data = NHANES)
+model_r2$coefficients
+```
+## Some benchmark
+```{r}
+library(rbenchmark)
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+           model2 = lm(Age~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+```

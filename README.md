@@ -64,7 +64,7 @@ installation of this package by ?function_name
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Here we offered an example of how to make use of these functions:
 
 ``` r
 library(HW3)
@@ -215,8 +215,8 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.09    25.75      3.10     0.00
-#> 2       rcode          100    0.12     1.00      0.11     0.02
+#> 1 Linearmodel          100    3.03   23.308      3.01     0.01
+#> 2       rcode          100    0.13    1.000      0.12     0.00
 
 benchmark(Linearmodel={
            model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
@@ -227,6 +227,6 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.09   11.885      3.09        0
-#> 2       rcode          100    0.26    1.000      0.26        0
+#> 1 Linearmodel          100    3.03    12.12      3.04        0
+#> 2       rcode          100    0.25     1.00      0.25        0
 ```

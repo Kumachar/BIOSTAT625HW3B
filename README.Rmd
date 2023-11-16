@@ -86,7 +86,7 @@ model$coefficients
 #Also we can predict data based on acquired coefficients use lineaer_prediction function
 head(linear_prediction(X,model$coefficients))
 
-#There are also some useful functions to generate the result of regression 
+#There are also some useful functions to generate the result of regression, as you can do with summary function
 result<-model_summary(model)
 
 print(result)
@@ -107,19 +107,72 @@ library(testthat)
   names(X1) <- 'hp'
   mymodel <- linear_model(X1,y,T)
   lmmodel <- lm(y~X1, data=mtcars)
+  #For linear model related functions
+  expect_equal(mymodel$coefficients, lmmodel$coefficients,ignore_attr = TRUE)
+  expect_equal(mymodel$fitted.values, lmmodel$fitted.values,ignore_attr = TRUE)
+  expect_equal(mymodel$residuals, lmmodel$residuals,ignore_attr = TRUE)
+  
+  #for summary
+  rsum <- summary(lmmodel)
+  testresult <- model_summary(mymodel, show_table = FALSE)
+  expect_equal(testresult$Estimate, rsum$coefficients[,'Estimate'],ignore_attr = TRUE)
+  expect_equal(testresult$StdError, rsum$coefficients[,'Std. Error'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$t_value, rsum$coefficients[,'t value'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$pt_value, rsum$coefficients[,'Pr(>|t|)'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$f_value, as.numeric(rsum$fstatistic[1]),tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$pf_value, as.numeric(pf(rsum$fstatistic[1], rsum$fstatistic[2],rsum$fstatistic[3], lower.tail = F)),tolerance = 1e-6)
+  expect_equal(testresult$R2, rsum$r.squared, tolerance = 1e-6)
+  expect_equal(testresult$R2_adj, rsum$adj.r.squared, tolerance = 1e-6)
+  
+```
+Now we can see that our model's result align with r function's.
 
-  expect_equal(mymodel$coefficients, lmmodel$coefficients, tolerance = 1e-6,ignore_attr = TRUE)
-  expect_equal(mymodel$fitted.values, lmmodel$fitted.values, tolerance = 1e-6,ignore_attr = TRUE)
-  expect_equal(mymodel$residuals, lmmodel$residuals, tolerance = 1e-6,ignore_attr = TRUE)
-  
-  
+## Some benchmark
+```{r}
+library(rbenchmark)
+library(NHANES)
+#For linear model related functions
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+           model2 = lm(Age~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+benchmark(Linearmodel={
+           fitted = linear_prediction(X1,mymodel$coefficients)
+         }, 
+         rcode = {
+           predict(lmmodel, mtcars[, c("hp"),drop=F])
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+#For summary
+benchmark(Linearmodel={
+           model_summary(mymodel, show_table = FALSE)
+         }, 
+         rcode = {
+           summary(lmmodel)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
 ```
 
 ## This function can also work with other packages
 ```{r}
 #install.packages("NHANES")
 #install.packages("ggplot2")
-library(NHANES)
+
 library(ggplot2)
 model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
 # Assuming model3 contains fitted values and coefficients
@@ -148,39 +201,20 @@ ggplot(plot_data, aes(x = Height, y = BPSysAve)) +
 
 ```
 
-## More features!
-since our design is completely based on matrix, you can even apply regression on multiple output(test-statistics is not available yet)
+## More
+since our design is completely based on matrix, theoretically we can even apply regression on multiple output, however which may introduce calculation error(test-statistics is not available yet). Please, use this feature carefully!
 ```{r}
 X = NHANES[,c("Weight","Height")]
 y = NHANES[,c("BPSysAve","Age")]
 model4 <- linear_model(X,y)
 print(model4$coefficients)
-print(model4$fitted.values[1:5])
 
 #Compared with regression individually
 model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
 model_r1$coefficients
+head(model_r1$fitted.values)
 model_r2 <- lm(Age~Weight+Height, data = NHANES)
 model_r2$coefficients
+head(model_r1$fitted.values)
 ```
-## Some benchmark
-```{r}
-library(rbenchmark)
 
-benchmark(Linearmodel={
-           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
-         }, 
-         rcode = {
-           model =lm(BPSysAve~Weight+Height, data = NHANES)
-         }, 
-          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
-
-benchmark(Linearmodel={
-           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
-         }, 
-         rcode = {
-           model =lm(BPSysAve~Weight+Height, data = NHANES)
-           model2 = lm(Age~Weight+Height, data = NHANES)
-         }, 
-          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
-```

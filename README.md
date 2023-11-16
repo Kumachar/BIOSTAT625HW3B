@@ -95,7 +95,7 @@ head(linear_prediction(X,model$coefficients))
 #> Hornet Sportabout           Valiant 
 #>          18.32727          20.47382
 
-#There are also some useful functions to generate the result of regression 
+#There are also some useful functions to generate the result of regression, as you can do with summary function
 result<-model_summary(model)
 #>                Estimate Std. Error   t value     Pr(>|t|)
 #> (Intercept) 37.22727012 1.59878754 23.284689 2.565459e-20
@@ -176,12 +176,79 @@ library(testthat)
   names(X1) <- 'hp'
   mymodel <- linear_model(X1,y,T)
   lmmodel <- lm(y~X1, data=mtcars)
+  #For linear model related functions
+  expect_equal(mymodel$coefficients, lmmodel$coefficients,ignore_attr = TRUE)
+  expect_equal(mymodel$fitted.values, lmmodel$fitted.values,ignore_attr = TRUE)
+  expect_equal(mymodel$residuals, lmmodel$residuals,ignore_attr = TRUE)
+  
+  #for summary
+  rsum <- summary(lmmodel)
+  testresult <- model_summary(mymodel, show_table = FALSE)
+  expect_equal(testresult$Estimate, rsum$coefficients[,'Estimate'],ignore_attr = TRUE)
+  expect_equal(testresult$StdError, rsum$coefficients[,'Std. Error'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$t_value, rsum$coefficients[,'t value'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$pt_value, rsum$coefficients[,'Pr(>|t|)'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$f_value, as.numeric(rsum$fstatistic[1]),tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$pf_value, as.numeric(pf(rsum$fstatistic[1], rsum$fstatistic[2],rsum$fstatistic[3], lower.tail = F)),tolerance = 1e-6)
+  expect_equal(testresult$R2, rsum$r.squared, tolerance = 1e-6)
+  expect_equal(testresult$R2_adj, rsum$adj.r.squared, tolerance = 1e-6)
+  
+```
 
-  expect_equal(mymodel$coefficients, lmmodel$coefficients, tolerance = 1e-6,ignore_attr = TRUE)
-  expect_equal(mymodel$fitted.values, lmmodel$fitted.values, tolerance = 1e-6,ignore_attr = TRUE)
-  expect_equal(mymodel$residuals, lmmodel$residuals, tolerance = 1e-6,ignore_attr = TRUE)
-  
-  
+Now we can see that our model’s result align with r function’s.
+
+## Some benchmark
+
+``` r
+library(rbenchmark)
+library(NHANES)
+#> Warning: 程辑包'NHANES'是用R版本4.1.3 来建造的
+#For linear model related functions
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#>          test replications elapsed relative user.self sys.self
+#> 1 Linearmodel          100    2.72   20.923      2.72     0.00
+#> 2       rcode          100    0.13    1.000      0.11     0.02
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+           model2 = lm(Age~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#>          test replications elapsed relative user.self sys.self
+#> 1 Linearmodel          100    3.09    12.36      3.09        0
+#> 2       rcode          100    0.25     1.00      0.25        0
+
+benchmark(Linearmodel={
+           fitted = linear_prediction(X1,mymodel$coefficients)
+         }, 
+         rcode = {
+           predict(lmmodel, mtcars[, c("hp"),drop=F])
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#>          test replications elapsed relative user.self sys.self
+#> 1 Linearmodel          100    0.00       NA      0.00        0
+#> 2       rcode          100    0.02       NA      0.01        0
+
+#For summary
+benchmark(Linearmodel={
+           model_summary(mymodel, show_table = FALSE)
+         }, 
+         rcode = {
+           summary(lmmodel)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#>          test replications elapsed relative user.self sys.self
+#> 1 Linearmodel          100    0.03      1.5      0.03        0
+#> 2       rcode          100    0.02      1.0      0.01        0
 ```
 
 ## This function can also work with other packages
@@ -189,8 +256,7 @@ library(testthat)
 ``` r
 #install.packages("NHANES")
 #install.packages("ggplot2")
-library(NHANES)
-#> Warning: 程辑包'NHANES'是用R版本4.1.3 来建造的
+
 library(ggplot2)
 model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
 # Assuming model3 contains fitted values and coefficients
@@ -212,7 +278,7 @@ ggplot(plot_data, aes(x = Weight, y = BPSysAve)) +
   ggtitle("Weight v.s BPSysAve")
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 ``` r
 # Plot for Height vs BPSysAve
@@ -222,12 +288,14 @@ ggplot(plot_data, aes(x = Height, y = BPSysAve)) +
   ggtitle("Height v.s BPSysAve")
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-2.png" width="100%" />
 
-## More features!
+## More
 
-since our design is completely based on matrix, you can even apply
-regression on multiple output(test-statistics is not available yet)
+since our design is completely based on matrix, theoretically we can
+even apply regression on multiple output, however which may introduce
+calculation error(test-statistics is not available yet). Please, use
+this feature carefully!
 
 ``` r
 X = NHANES[,c("Weight","Height")]
@@ -238,45 +306,20 @@ print(model4$coefficients)
 #> (Intercept) 96.47669099 20.99512354
 #> Weight       0.19308885  0.22071809
 #> Height       0.03967481  0.01651863
-print(model4$fitted.values[1:5])
-#> [1] 119.8871 119.8871 119.8871 119.8987 107.5115
 
 #Compared with regression individually
 model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
 model_r1$coefficients
 #> (Intercept)      Weight      Height 
 #> 96.47669099  0.19308885  0.03967481
+head(model_r1$fitted.values)
+#>        1        2        3        5        6        7 
+#> 119.8871 119.8871 119.8871 119.8987 107.5115 108.4549
 model_r2 <- lm(Age~Weight+Height, data = NHANES)
 model_r2$coefficients
 #> (Intercept)      Weight      Height 
 #> -23.1537289   0.2113783   0.2811055
-```
-
-## Some benchmark
-
-``` r
-library(rbenchmark)
-
-benchmark(Linearmodel={
-           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
-         }, 
-         rcode = {
-           model =lm(BPSysAve~Weight+Height, data = NHANES)
-         }, 
-          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
-#>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.17   22.643      3.15     0.01
-#> 2       rcode          100    0.14    1.000      0.14     0.00
-
-benchmark(Linearmodel={
-           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
-         }, 
-         rcode = {
-           model =lm(BPSysAve~Weight+Height, data = NHANES)
-           model2 = lm(Age~Weight+Height, data = NHANES)
-         }, 
-          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
-#>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.17    12.68      3.16        0
-#> 2       rcode          100    0.25     1.00      0.25        0
+head(model_r1$fitted.values)
+#>        1        2        3        5        6        7 
+#> 119.8871 119.8871 119.8871 119.8987 107.5115 108.4549
 ```

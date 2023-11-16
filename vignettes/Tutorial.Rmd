@@ -50,36 +50,5 @@ head(predict(model2,X))
 summary(model2)
 ```
 
-## This function can also work with other packages
-```{r}
-#install.packages("NHANES")
-#install.packages("ggplot2")
-library(NHANES)
-library(ggplot2)
-model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
-# Assuming model3 contains fitted values and coefficients
-fitted_values <- model3$fitted.values
-coefficients <- model3$coefficients
 
-# Prepare a data frame for plotting
-plot_data <- data.frame(
-  Weight = model3$model$X[,'Weight'],
-  Height = model3$model$X[,'Height'],
-  BPSysAve = model3$model$y,
-  FittedBPSysAve = fitted_values
-)
-
-# Plot for Weight vs BPSysAve
-ggplot(plot_data, aes(x = Weight, y = BPSysAve)) + 
-  geom_point() + 
-  geom_line(aes(y = FittedBPSysAve), color = "blue") +
-  ggtitle("Weight v.s BPSysAve")
-
-# Plot for Height vs BPSysAve
-ggplot(plot_data, aes(x = Height, y = BPSysAve)) + 
-  geom_point() + 
-  geom_line(aes(y = FittedBPSysAve), color = "red") +
-  ggtitle("Height v.s BPSysAve")
-
-```
 

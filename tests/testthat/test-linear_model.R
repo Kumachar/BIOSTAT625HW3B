@@ -10,6 +10,12 @@ test_that("Test linear model consitency", {
   expect_equal(mymodel$fitted.values, lmmodel$fitted.values, tolerance = 1e-6)
   expect_equal(mymodel$residuals, lmmodel$residuals, tolerance = 1e-6)
 
+  #Test Rcpp
+  mymodel <- linear_model(X,y,T,T)
+  expect_equal(mymodel$coefficients, lmmodel$coefficients, tolerance = 1e-6)
+  expect_equal(mymodel$fitted.values, lmmodel$fitted.values, tolerance = 1e-6)
+  expect_equal(mymodel$residuals, lmmodel$residuals, tolerance = 1e-6)
+
   #test when input is num
   X1 <- mtcars[, c("hp")]
   names(X1) <- 'hp'

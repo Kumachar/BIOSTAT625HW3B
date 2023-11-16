@@ -4,7 +4,7 @@
 \alias{linear_model}
 \title{Linear Model}
 \usage{
-linear_model(X, y, intercept = TRUE)
+linear_model(X, y, intercept = TRUE, rcpp = FALSE)
 }
 \arguments{
 \item{X}{is a matrix of input features, each row represents an observation}
@@ -12,6 +12,8 @@ linear_model(X, y, intercept = TRUE)
 \item{y}{is nums of parameters you obtained from linear regression}
 
 \item{intercept}{is a bool value denotes if model contain an intercept}
+
+\item{rcpp}{Whether use Rcpp, deafault is FALSE}
 }
 \value{
 the result list of linear regression. Notice that, result model in the return list has removed the observation with NA.

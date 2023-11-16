@@ -5,6 +5,7 @@
 #'@param X is a matrix of input features, each row represents an observation
 #'@param y is nums of parameters you obtained from linear regression
 #'@param intercept is a bool value denotes if model contain an intercept
+#'@param rcpp Whether use Rcpp, deafault is FALSE
 #'@return the result list of linear regression. Notice that, result model in the return list has removed the observation with NA.
 #'
 #'@examples
@@ -17,7 +18,7 @@
 #' print(model)
 #'@export
 
-linear_model <- function(X,y,intercept=TRUE){
+linear_model <- function(X,y,intercept=TRUE,rcpp=FALSE){
   #Remove NA in the data
   if(!is.matrix(X)){
     X = as.matrix(X)

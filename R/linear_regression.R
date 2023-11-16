@@ -11,7 +11,7 @@
 #'@param X is a matrix of input features, each row represents an observation
 #'@param y is a matrix of output labels, each row represents an observation
 #'@param intercept is a bool value indicates whether there is intercept in the model, default value is true
-#'
+#'@param rcpp is a bool value indicates whether there is intercept in the model, default value is true
 #'@return the matrix of parameters \eqn{\beta} for linear regression
 #'
 #'@examples
@@ -30,7 +30,7 @@
 #'
 #'@export
 
-Linear_regression<-function(X,y,intercept=TRUE){
+Linear_regression<-function(X,y,intercept=TRUE, rcpp=FALSE){
 
   if(!is.matrix(X)){
     X = as.matrix(X)
@@ -47,8 +47,12 @@ Linear_regression<-function(X,y,intercept=TRUE){
     print('Matrix is invertible Please Check!')
     return(NULL)
   }
-
-  result <- solve(t(X)%*%X)%*%t(X)%*%y
-  return(drop(result))
+  if(rcpp){
+    result <- invertMatrix(t(X)%*%X)%*%t(X)%*%y
+    return(drop(result))
+  }else{
+    result <- solve(t(X)%*%X)%*%t(X)%*%y
+    return(drop(result))
+  }
 }
 

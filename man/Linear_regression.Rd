@@ -4,7 +4,7 @@
 \alias{Linear_regression}
 \title{Linear Regression}
 \usage{
-Linear_regression(X, y, intercept = TRUE)
+Linear_regression(X, y, intercept = TRUE, rcpp = FALSE)
 }
 \arguments{
 \item{X}{is a matrix of input features, each row represents an observation}
@@ -12,6 +12,8 @@ Linear_regression(X, y, intercept = TRUE)
 \item{y}{is a matrix of output labels, each row represents an observation}
 
 \item{intercept}{is a bool value indicates whether there is intercept in the model, default value is true}
+
+\item{rcpp}{is a bool value indicates whether there is intercept in the model, default value is true}
 }
 \value{
 the matrix of parameters \eqn{\beta} for linear regression

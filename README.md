@@ -59,7 +59,7 @@ devtools::install_github("Kumachar/BIOSTAT625HW3B")
         TRUE).
     -   Returns test results and optional
 
-Or you simply find the help page of these functions after the
+Or you can simply find the help page of these functions after the
 installation of this package by ?function_name
 
 ## Example
@@ -215,8 +215,8 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.03   23.308      3.01     0.01
-#> 2       rcode          100    0.13    1.000      0.12     0.00
+#> 1 Linearmodel          100    3.05   21.786      3.05        0
+#> 2       rcode          100    0.14    1.000      0.14        0
 
 benchmark(Linearmodel={
            model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
@@ -227,6 +227,6 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.03    12.12      3.04        0
-#> 2       rcode          100    0.25     1.00      0.25        0
+#> 1 Linearmodel          100    3.11   11.962      3.11        0
+#> 2       rcode          100    0.26    1.000      0.27        0
 ```

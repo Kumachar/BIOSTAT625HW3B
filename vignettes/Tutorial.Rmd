@@ -18,3 +18,26 @@ knitr::opts_chunk$set(
 library(HW3)
 ```
 
+
+Now we can display a simple example of how this package works. We are going to use linear model to predict the Miles per gallon based on horse power and weight of a car in mtcars data.
+
+```{r cars}
+data("mtcars")
+X <- mtcars[, c("hp", "wt")]
+y <- mtcars$mpg
+
+#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car
+model <- linear_model(X, y, intercept = TRUE)
+
+#Now we can see the regression coefficients for each variable you use in the model
+model$coefficients
+
+#Also we can predict data based on acquired coefficients use lineaer_prediction function
+head(linear_prediction(X,model$coefficients))
+
+#There are also some useful functions to generate the result of regression 
+result<-model_summary(model)
+
+print(result)
+
+```

@@ -102,7 +102,7 @@ summary(model2)
 ```
 
 ## This function can also work with other packages
-```{r pressure, echo = FALSE}
+```{r}
 #install.packages("NHANES")
 #install.packages("ggplot2")
 library(NHANES)

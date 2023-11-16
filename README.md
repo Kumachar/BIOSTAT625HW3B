@@ -170,9 +170,43 @@ summary(model2)
 
 ## This function can also work with other packages
 
-    #> Warning: 程辑包'NHANES'是用R版本4.1.3 来建造的
+``` r
+#install.packages("NHANES")
+#install.packages("ggplot2")
+library(NHANES)
+#> Warning: 程辑包'NHANES'是用R版本4.1.3 来建造的
+library(ggplot2)
+model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+# Assuming model3 contains fitted values and coefficients
+fitted_values <- model3$fitted.values
+coefficients <- model3$coefficients
 
-<img src="man/figures/README-pressure-1.png" width="100%" /><img src="man/figures/README-pressure-2.png" width="100%" />
+# Prepare a data frame for plotting
+plot_data <- data.frame(
+  Weight = model3$model$X[,'Weight'],
+  Height = model3$model$X[,'Height'],
+  BPSysAve = model3$model$y,
+  FittedBPSysAve = fitted_values
+)
+
+# Plot for Weight vs BPSysAve
+ggplot(plot_data, aes(x = Weight, y = BPSysAve)) + 
+  geom_point() + 
+  geom_line(aes(y = FittedBPSysAve), color = "blue") +
+  ggtitle("Weight v.s BPSysAve")
+```
+
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+
+``` r
+# Plot for Height vs BPSysAve
+ggplot(plot_data, aes(x = Height, y = BPSysAve)) + 
+  geom_point() + 
+  geom_line(aes(y = FittedBPSysAve), color = "red") +
+  ggtitle("Height v.s BPSysAve")
+```
+
+<img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" />
 
 ## More features!
 
@@ -215,8 +249,8 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.05   21.786      3.05        0
-#> 2       rcode          100    0.14    1.000      0.14        0
+#> 1 Linearmodel          100    3.07   23.615      3.06        0
+#> 2       rcode          100    0.13    1.000      0.12        0
 
 benchmark(Linearmodel={
            model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
@@ -227,6 +261,6 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.11   11.962      3.11        0
-#> 2       rcode          100    0.26    1.000      0.27        0
+#> 1 Linearmodel          100    3.11    12.44      3.11        0
+#> 2       rcode          100    0.25     1.00      0.25        0
 ```

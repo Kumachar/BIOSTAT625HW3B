@@ -31,22 +31,23 @@
 #'@export
 
 Linear_regression<-function(X,y,intercept=TRUE, rcpp=FALSE){
-
+  #Turn input into matrix
   if(!is.matrix(X)){
     X = as.matrix(X)
   }
   if(!is.matrix(y)){
     y = as.matrix(y)
   }
-
+  #Identify if X need to include intercept, if so add one 1 vector as the first column
   if(intercept&!any(apply(X, 2, FUN = function(x) all(x == 1)))){
     X = cbind("(Intercept)"=1,X)
   }
-
+  #Test if XTX is invertible, otherwise return NULL
   if(det(t(X)%*%X)==0){
     print('Matrix is invertible Please Check!')
     return(NULL)
   }
+  #Whether to use rcpp function get inverse of XTX, and return the result
   if(rcpp){
     result <- invertMatrix(t(X)%*%X)%*%t(X)%*%y
     return(drop(result))

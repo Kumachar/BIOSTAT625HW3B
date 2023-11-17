@@ -21,10 +21,11 @@ The goal of this package HW3 is to facilitate get linear regression result and i
 
 ## Function Usage
 
-1. **linear_model(X, y, intercept = TRUE)**: Builds a linear model. 
+1. **linear_model(X, y, intercept = TRUE, rcpp = FALSE)**: Builds a linear model. 
     - `X`: Predictor variables (matrix or data frame). 
     - `y`: Response variable (matrix or data frame).
     - `intercept`: Whether to include the intercept (default: TRUE). 
+    - `rcpp``: Whether to use rcpp function(invertMatrix) (default: FALSE).
     - Returns a list with model coefficients, fitted values, residuals, rank, mean squared error, model data, intercept inclusion status, and NA removal details.
     
 2. **parameter_t_test(model)**: Conducts t-tests and F-tests on model parameters. -->
@@ -37,16 +38,17 @@ The goal of this package HW3 is to facilitate get linear regression result and i
     - `intercept`: Whether the intercept was included in the model.
     - Returns predicted values. 
 
- 4. **Linear_regression(X, y, intercept = TRUE)**: Helper function for `linear_model` to perform linear regression.
+ 4. **Linear_regression(X, y, intercept = TRUE, rcpp = FALSE)**: Helper function for `linear_model` to perform linear regression.
     - `X`: Predictor variables (matrix or data frame). 
     - `y`: Response variable (matrix or data frame).
     - `intercept`: Whether to include the intercept.
+    - `rcpp``: Whether to use rcpp function(invertMatrix) (default: FALSE).
     - Returns regression coefficients. 
 
  5. **model_summary(model, show_table = TRUE)**: Summarizes the linear model. 
     - `model`: The linear model object returned by `linear_model`. 
     - `show_table`: Whether to display the summary table (default: TRUE). 
-    - Returns test results and optional
+    - Returns test results and other linear regression analysis
 
 Or you can simply find the help page of these functions after the installation of this package by ?function_name
 
@@ -82,4 +84,130 @@ summary(model2)
 ```
 
 
+*We can formally test whether they are equal*
+```{r}
+library(testthat)
+  X1 <- mtcars[, c("hp")]
+  names(X1) <- 'hp'
+  mymodel <- linear_model(X1,y,T)
+  lmmodel <- lm(y~X1, data=mtcars)
+  #For linear model related functions
+  expect_equal(mymodel$coefficients, lmmodel$coefficients,ignore_attr = TRUE)
+  expect_equal(mymodel$fitted.values, lmmodel$fitted.values,ignore_attr = TRUE)
+  expect_equal(mymodel$residuals, lmmodel$residuals,ignore_attr = TRUE)
+  
+  #for summary
+  rsum <- summary(lmmodel)
+  testresult <- model_summary(mymodel, show_table = FALSE)
+  expect_equal(testresult$Estimate, rsum$coefficients[,'Estimate'],ignore_attr = TRUE)
+  expect_equal(testresult$StdError, rsum$coefficients[,'Std. Error'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$t_value, rsum$coefficients[,'t value'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$pt_value, rsum$coefficients[,'Pr(>|t|)'],tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$f_value, as.numeric(rsum$fstatistic[1]),tolerance = 1e-6,ignore_attr = TRUE)
+  expect_equal(testresult$pf_value, as.numeric(pf(rsum$fstatistic[1], rsum$fstatistic[2],rsum$fstatistic[3], lower.tail = F)),tolerance = 1e-6)
+  expect_equal(testresult$R2, rsum$r.squared, tolerance = 1e-6)
+  expect_equal(testresult$R2_adj, rsum$adj.r.squared, tolerance = 1e-6)
+  
+```
 
+Now we can see that our model's result align with r function's.
+
+## Some benchmark
+```{r}
+library(rbenchmark)
+library(NHANES)
+#For linear model related functions
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+benchmark(Linearmodel={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
+         }, 
+         rcode = {
+           model =lm(BPSysAve~Weight+Height, data = NHANES)
+           model2 = lm(Age~Weight+Height, data = NHANES)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#For rcpp
+benchmark(Linearmodelcpp={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")],rcpp = TRUE)
+         }, 
+         Linearmodel = {
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+benchmark(Linearmodel={
+           fitted = linear_prediction(X1,mymodel$coefficients)
+         }, 
+         rcode = {
+           predict(lmmodel, mtcars[, c("hp"),drop=F])
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+#For summary
+benchmark(Linearmodel={
+           model_summary(mymodel, show_table = FALSE)
+         }, 
+         rcode = {
+           summary(lmmodel)
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+
+```
+
+## This function can also work with other packages
+```{r}
+#install.packages("NHANES")
+#install.packages("ggplot2")
+
+library(ggplot2)
+model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+# Assuming model3 contains fitted values and coefficients
+fitted_values <- model3$fitted.values
+coefficients <- model3$coefficients
+
+# Prepare a data frame for plotting
+plot_data <- data.frame(
+  Weight = model3$model$X[,'Weight'],
+  Height = model3$model$X[,'Height'],
+  BPSysAve = model3$model$y,
+  FittedBPSysAve = fitted_values
+)
+
+# Plot for Weight vs BPSysAve
+ggplot(plot_data, aes(x = Weight, y = BPSysAve)) + 
+  geom_point() + 
+  geom_line(aes(y = FittedBPSysAve), color = "blue") +
+  ggtitle("Weight v.s BPSysAve")
+
+# Plot for Height vs BPSysAve
+ggplot(plot_data, aes(x = Height, y = BPSysAve)) + 
+  geom_point() + 
+  geom_line(aes(y = FittedBPSysAve), color = "red") +
+  ggtitle("Height v.s BPSysAve")
+
+```
+
+## More
+since our design is completely based on matrix, theoretically we can even apply regression on multiple output, however which may introduce calculation error(& test-statistics is not available yet). Please, use this feature carefully!
+```{r}
+#Predict BPSysAve and Age simultaneously
+X = NHANES[,c("Weight","Height")]
+y = NHANES[,c("BPSysAve","Age")]
+model4 <- linear_model(X,y)
+print(model4$coefficients)
+
+#Compared with regression individually
+model_r1 <- lm(BPSysAve~Weight+Height, data = NHANES)
+model_r1$coefficients
+head(model_r1$fitted.values)
+model_r2 <- lm(Age~Weight+Height, data = NHANES)
+model_r2$coefficients
+head(model_r1$fitted.values)
+```

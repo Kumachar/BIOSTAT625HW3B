@@ -22,14 +22,16 @@
 #'@export
 
 linear_prediction<-function(X,b,intercept=TRUE){
+  #Turn input into matrix
   if (!is.matrix(X)){
     X = data.matrix(X)
   }
-
+  #Identify if X needs to include intercept term
   if(intercept&!any(apply(X, 2, FUN = function(x) all(x == 1)))){
     X = cbind(1,X)
   }
-
+  #turn coefficient into matrix
   beta = data.matrix(b)
+  #return prediction
   return(drop(X%*%beta))
 }

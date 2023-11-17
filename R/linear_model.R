@@ -19,14 +19,14 @@
 #'@export
 
 linear_model <- function(X,y,intercept=TRUE,rcpp=FALSE){
-  #Remove NA in the data
+  #Turn input into matrix
   if(!is.matrix(X)){
     X = as.matrix(X)
   }
   if(!is.matrix(y)){
     y = as.matrix(y)
   }
-
+  #Remove NA in the data
   na_row1 = apply(X,1,FUN = function(x) any(is.na(x)))
   na_row2 = apply(y,1,FUN = function(x) any(is.na(x)))
   na_row = na_row1 | na_row2
@@ -34,10 +34,12 @@ linear_model <- function(X,y,intercept=TRUE,rcpp=FALSE){
   y = y[!na_row,]
   remove_observation = list(removed_NA_obser=sum(na_row), reomved_row=which(na_row))
 
+  #Get result from linear regression related functions
   coefficients <- Linear_regression(X,y,intercept,rcpp)
   fitted.values <- linear_prediction(X,coefficients,intercept)
   residuals <- y-fitted.values
 
+  #Get rank of matrix X and identify if it already contains an intercept, if it is return ncol(X), otherwise return ncol(X)+1
   if(intercept&!any(apply(X, 2, FUN = function(x) all(x == 1)))){
     rank = ncol(X)+1
   }else{

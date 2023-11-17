@@ -27,10 +27,13 @@ devtools::install_github("Kumachar/BIOSTAT625HW3B")
 
 ## Function Usage
 
-1.  **linear_model(X, y, intercept = TRUE)**: Builds a linear model.
+1.  **linear_model(X, y, intercept = TRUE, rcpp = FALSE)**: Builds a
+    linear model.
     -   `X`: Predictor variables (matrix or data frame).
     -   `y`: Response variable (matrix or data frame).
     -   `intercept`: Whether to include the intercept (default: TRUE).
+    -   \`rcpp\`\`: Whether to use rcpp function(invertMatrix) (default:
+        FALSE).
     -   Returns a list with model coefficients, fitted values,
         residuals, rank, mean squared error, model data, intercept
         inclusion status, and NA removal details.
@@ -46,21 +49,23 @@ devtools::install_github("Kumachar/BIOSTAT625HW3B")
     -   `b`: Coefficients of the linear model.
     -   `intercept`: Whether the intercept was included in the model.
     -   Returns predicted values.
-4.  **Linear_regression(X, y, intercept = TRUE)**: Helper function for
-    `linear_model` to perform linear regression.
+4.  **Linear_regression(X, y, intercept = TRUE, rcpp = FALSE)**: Helper
+    function for `linear_model` to perform linear regression.
     -   `X`: Predictor variables (matrix or data frame).
     -   `y`: Response variable (matrix or data frame).
     -   `intercept`: Whether to include the intercept.
+    -   \`rcpp\`\`: Whether to use rcpp function(invertMatrix) (default:
+        FALSE).
     -   Returns regression coefficients.
 5.  **model_summary(model, show_table = TRUE)**: Summarizes the linear
     model.
     -   `model`: The linear model object returned by `linear_model`.
     -   `show_table`: Whether to display the summary table (default:
         TRUE).
-    -   Returns test results and optional
+    -   Returns test results and other linear regression analysis
 
 Or you can simply find the help page of these functions after the
-installation of this package by ?function_name
+installation of this package by ?function_name or check man folder.
 
 ## Example
 
@@ -80,16 +85,26 @@ data("mtcars")
 X <- mtcars[, c("hp", "wt")]
 y <- mtcars$mpg
 
-#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car
+#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car with an intercept
 model <- linear_model(X, y, intercept = TRUE)
+
+#You can also activate rcpp function to get the same result
+modelcpp <- linear_model(X, y, intercept = TRUE, rcpp = TRUE)
 
 #Now we can see the regression coefficients for each variable you use in the model
 model$coefficients
 #> (Intercept)          hp          wt 
 #> 37.22727012 -0.03177295 -3.87783074
+modelcpp$coefficients
+#> [1] 37.22727012 -0.03177295 -3.87783074
 
 #Also we can predict data based on acquired coefficients use lineaer_prediction function
 head(linear_prediction(X,model$coefficients))
+#>         Mazda RX4     Mazda RX4 Wag        Datsun 710    Hornet 4 Drive 
+#>          23.57233          22.58348          25.27582          21.26502 
+#> Hornet Sportabout           Valiant 
+#>          18.32727          20.47382
+head(linear_prediction(X,modelcpp$coefficients))
 #>         Mazda RX4     Mazda RX4 Wag        Datsun 710    Hornet 4 Drive 
 #>          23.57233          22.58348          25.27582          21.26502 
 #> Hornet Sportabout           Valiant 
@@ -103,11 +118,44 @@ result<-model_summary(model)
 #> wt          -3.87783074 0.63273349 -6.128695 1.119647e-06
 #> F-statistic:  69.21121  on  2  and  29  DF,  p-value:  9.109054e-12 
 #> Multiple R-squared:  0.8267855 , Adjusted R-squared:  0.8148396
-
+resultcpp<-model_summary(modelcpp)
+#>                Estimate Std. Error   t value     Pr(>|t|)
+#> (Intercept) 37.22727012 1.59878754 23.284689 2.565459e-20
+#> hp          -0.03177295 0.00902971 -3.518712 1.451229e-03
+#> wt          -3.87783074 0.63273349 -6.128695 1.119647e-06
+#> F-statistic:  69.21121  on  2  and  29  DF,  p-value:  9.109054e-12 
+#> Multiple R-squared:  0.8267855 , Adjusted R-squared:  0.8148396
 print(result)
 #> $Estimate
 #> (Intercept)          hp          wt 
 #> 37.22727012 -0.03177295 -3.87783074 
+#> 
+#> $StdError
+#> (Intercept)          hp          wt 
+#>  1.59878754  0.00902971  0.63273349 
+#> 
+#> $t_value
+#> (Intercept)          hp          wt 
+#>   23.284689   -3.518712   -6.128695 
+#> 
+#> $pt_value
+#>  (Intercept)           hp           wt 
+#> 2.565459e-20 1.451229e-03 1.119647e-06 
+#> 
+#> $f_value
+#> [1] 69.21121
+#> 
+#> $pf_value
+#> [1] 9.109054e-12
+#> 
+#> $R2
+#> [1] 0.8267855
+#> 
+#> $R2_adj
+#> [1] 0.8148396
+print(resultcpp)
+#> $Estimate
+#> [1] 37.22727012 -0.03177295 -3.87783074
 #> 
 #> $StdError
 #> (Intercept)          hp          wt 
@@ -174,7 +222,7 @@ summary(model2)
 library(testthat)
   X1 <- mtcars[, c("hp")]
   names(X1) <- 'hp'
-  mymodel <- linear_model(X1,y,T)
+  mymodel <- linear_model(X1,y,intercept = T)
   lmmodel <- lm(y~X1, data=mtcars)
   #For linear model related functions
   expect_equal(mymodel$coefficients, lmmodel$coefficients,ignore_attr = TRUE)
@@ -212,8 +260,9 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    2.72   20.923      2.72     0.00
-#> 2       rcode          100    0.13    1.000      0.11     0.02
+#> 1 Linearmodel          100    2.78   19.857      2.78        0
+#> 2       rcode          100    0.14    1.000      0.14        0
+
 
 benchmark(Linearmodel={
            model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve","Age")])
@@ -224,8 +273,19 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.09    12.36      3.09        0
-#> 2       rcode          100    0.25     1.00      0.25        0
+#> 1 Linearmodel          100    3.15    11.25      3.16        0
+#> 2       rcode          100    0.28     1.00      0.28        0
+#For rcpp
+benchmark(Linearmodelcpp={
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")],rcpp = TRUE)
+         }, 
+         Linearmodel = {
+           model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
+         }, 
+          replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
+#>             test replications elapsed relative user.self sys.self
+#> 2    Linearmodel          100    2.93    1.024      2.94        0
+#> 1 Linearmodelcpp          100    2.86    1.000      2.86        0
 
 benchmark(Linearmodel={
            fitted = linear_prediction(X1,mymodel$coefficients)
@@ -236,7 +296,9 @@ benchmark(Linearmodel={
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
 #> 1 Linearmodel          100    0.00       NA      0.00        0
-#> 2       rcode          100    0.02       NA      0.01        0
+#> 2       rcode          100    0.03       NA      0.03        0
+
+
 
 #For summary
 benchmark(Linearmodel={
@@ -247,8 +309,8 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    0.03      1.5      0.03        0
-#> 2       rcode          100    0.02      1.0      0.01        0
+#> 1 Linearmodel          100    0.02       NA      0.01        0
+#> 2       rcode          100    0.00       NA      0.00        0
 ```
 
 ## This function can also work with other packages

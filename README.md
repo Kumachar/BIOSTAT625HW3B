@@ -12,8 +12,8 @@ coverage](https://codecov.io/gh/Kumachar/BIOSTAT625HW3B/branch/master/graph/badg
 
 The goal of this package HW3 is to facilitate get linear regression
 result and its analysis. It includes functions for building linear
-models, making predictions, testing parameters, and summarizing model
-results.
+models($Y = X\beta +\epsilon$), making predictions, testing parameters,
+and summarizing model results.
 
 ## Installation
 
@@ -62,10 +62,13 @@ devtools::install_github("Kumachar/BIOSTAT625HW3B")
     -   `model`: The linear model object returned by `linear_model`.
     -   `show_table`: Whether to display the summary table (default:
         TRUE).
-    -   Returns test results and other linear regression analysis
+    -   Returns test results and other linear regression analysis based
+        on the result of parameter_t\_test()
 
 Or you can simply find the help page of these functions after the
-installation of this package by ?function_name or check man folder.
+installation of this package by ?function_name or check man folder. Here
+we do not offer a usage for rcpp function invertMatrix which is used for
+obtain the inverse of matrix, check help page if needed.
 
 ## Example
 
@@ -85,7 +88,8 @@ data("mtcars")
 X <- mtcars[, c("hp", "wt")]
 y <- mtcars$mpg
 
-#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car with an intercept
+#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car with an intercept. The coefficients and
+#fitted values are included in the model object you can check them easily using $ sign.
 model <- linear_model(X, y, intercept = TRUE)
 
 #You can also activate rcpp function to get the same result
@@ -260,8 +264,8 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    2.78   19.857      2.78        0
-#> 2       rcode          100    0.14    1.000      0.14        0
+#> 1 Linearmodel          100    2.84   20.286      2.85     0.00
+#> 2       rcode          100    0.14    1.000      0.13     0.01
 
 
 benchmark(Linearmodel={
@@ -273,8 +277,8 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    3.15    11.25      3.16        0
-#> 2       rcode          100    0.28     1.00      0.28        0
+#> 1 Linearmodel          100    3.09   11.885      3.09        0
+#> 2       rcode          100    0.26    1.000      0.26        0
 #For rcpp
 benchmark(Linearmodelcpp={
            model = linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")],rcpp = TRUE)
@@ -284,8 +288,8 @@ benchmark(Linearmodelcpp={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>             test replications elapsed relative user.self sys.self
-#> 2    Linearmodel          100    2.93    1.024      2.94        0
-#> 1 Linearmodelcpp          100    2.86    1.000      2.86        0
+#> 2    Linearmodel          100    2.86    1.000      2.86        0
+#> 1 Linearmodelcpp          100    2.91    1.017      2.91        0
 
 benchmark(Linearmodel={
            fitted = linear_prediction(X1,mymodel$coefficients)
@@ -296,7 +300,7 @@ benchmark(Linearmodel={
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
 #> 1 Linearmodel          100    0.00       NA      0.00        0
-#> 2       rcode          100    0.03       NA      0.03        0
+#> 2       rcode          100    0.02       NA      0.02        0
 
 
 
@@ -309,16 +313,13 @@ benchmark(Linearmodel={
          }, 
           replications = 100, columns = c("test", "replications", "elapsed", "relative", "user.self", "sys.self"))
 #>          test replications elapsed relative user.self sys.self
-#> 1 Linearmodel          100    0.02       NA      0.01        0
+#> 1 Linearmodel          100    0.03       NA      0.03        0
 #> 2       rcode          100    0.00       NA      0.00        0
 ```
 
 ## This function can also work with other packages
 
 ``` r
-#install.packages("NHANES")
-#install.packages("ggplot2")
-
 library(ggplot2)
 model3 <- linear_model(NHANES[,c("Weight","Height")],NHANES[,c("BPSysAve")])
 # Assuming model3 contains fitted values and coefficients

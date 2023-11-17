@@ -59,20 +59,26 @@ data("mtcars")
 X <- mtcars[, c("hp", "wt")]
 y <- mtcars$mpg
 
-#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car
+#Construct a Multiple Linear Regression model to predict Miles per gallon based on horse power and weight of a car with an intercept. The coefficients and
+#fitted values are included in the model object you can check them easily using $ sign.
 model <- linear_model(X, y, intercept = TRUE)
+
+#You can also activate rcpp function to get the same result
+modelcpp <- linear_model(X, y, intercept = TRUE, rcpp = TRUE)
 
 #Now we can see the regression coefficients for each variable you use in the model
 model$coefficients
+modelcpp$coefficients
 
 #Also we can predict data based on acquired coefficients use lineaer_prediction function
 head(linear_prediction(X,model$coefficients))
+head(linear_prediction(X,modelcpp$coefficients))
 
-#There are also some useful functions to generate the result of regression 
+#There are also some useful functions to generate the result of regression, as you can do with summary function
 result<-model_summary(model)
-
+resultcpp<-model_summary(modelcpp)
 print(result)
-
+print(resultcpp)
 ```
 
 You can compare these result with the original lm and summary function
